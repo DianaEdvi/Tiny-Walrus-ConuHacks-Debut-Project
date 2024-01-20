@@ -15,6 +15,12 @@ public class PlayerMovement : MonoBehaviour
     public float defaultHeight = 2f;
     public float crouchHeight = 1f;
     public float crouchSpeed = 3f;
+    public float chargeSpeed = 5f;
+    public float maxChargeTime = 3f;
+    public float shootForce = 10f;
+    private float currentChargeTime = 0f;
+    private Rigidbody rb;
+    private bool isRightClicking = false;
 
     private Vector3 moveDirection = Vector3.zero;
     private float rotationX = 0;
@@ -27,12 +33,14 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = true;
+        rb = GetComponent<Rigidbody>();
+
     }
 
     void Update()
     {
-        Debug.Log("Player Position: " + transform.position);
         Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 lookDirection = playerCamera.transform.forward;
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
@@ -40,6 +48,14 @@ public class PlayerMovement : MonoBehaviour
         float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+
+        // controls the shooting forward 
+        if (!isRightClicking && currentChargeTime > 0 ){
+            Vector3 appliedForce = lookDirection * shootForce;
+            characterController.Move(appliedForce * Time.deltaTime);
+            currentChargeTime -= 0.01f;
+        }
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
@@ -77,6 +93,67 @@ public class PlayerMovement : MonoBehaviour
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }    
+
+        // Check if the right mouse button is being held down
+        if (Input.GetMouseButton(1))
+        {
+            // Right-click is held down
+            OnRightClickHold();
         }
+
+        // Check if the right mouse button is released
+        if (Input.GetMouseButtonUp(1))
+        {
+            // Right-click is released
+            OnRightClickRelease();
+        }
+    }
+    //end of update function
+
+    void OnRightClickHold()
+    {
+        // Your code while right-click is held down
+        Debug.Log("Right Click Held");
+        isRightClicking = true;
+        Charge();
+    }
+
+    void OnRightClickRelease()
+    {
+        // Your code when right-click is released
+        Debug.Log("Right Click Released");
+        isRightClicking = false;
+        Shoot();
+    }
+
+    void Charge()
+    {
+        if (currentChargeTime < maxChargeTime)
+        {
+            currentChargeTime += Time.deltaTime;
+            Debug.Log("Charging: " + currentChargeTime);
+        }
+    }
+
+    void Shoot()
+    {
+    // Calculate the shooting direction based on the player's forward direction
+    //Vector3 shootDirection = transform.forward;
+
+    Vector3 forward = transform.TransformDirection(Vector3.forward);
+
+    // Apply force to shoot the player in the direction they are looking
+    float forceMagnitude = Mathf.Lerp(0f, shootForce, currentChargeTime / maxChargeTime);
+    Debug.Log(forceMagnitude);
+
+    Vector3 appliedForce = forward * shootForce;
+
+    // Apply the force to the character controller
+    characterController.Move(appliedForce * Time.deltaTime);
+
+    // Reset charge time for the next shot
+
+    Debug.Log("Shoot!");
     }
 }
