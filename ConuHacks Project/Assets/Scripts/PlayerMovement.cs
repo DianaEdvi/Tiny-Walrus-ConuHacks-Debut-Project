@@ -28,9 +28,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canMove = true;
 
-    [SerializeField] AudioSource shootSound;
-    [SerializeField] AudioSource chargeSound;
-
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -130,37 +127,17 @@ public class PlayerMovement : MonoBehaviour
         Shoot();
     }
 
-// ChatGPT used to generate the charge time part of the code 
     void Charge()
     {
         if (currentChargeTime < maxChargeTime)
-    {
-        float previousChargeTime = currentChargeTime;
-
-        currentChargeTime += Time.deltaTime;
-
-        // Check if the charge time increased for the first time
-        if (previousChargeTime == 0)
         {
-            // Play Charge Sound only once at the beginning of charging
-            chargeSound.Play();
+            currentChargeTime += Time.deltaTime;
+            Debug.Log("Charging: " + currentChargeTime);
         }
-
-        // Check if the charge sound is still playing from the previous charge
-        if (!chargeSound.isPlaying)
-        {
-            // If not playing, start playing the charge sound
-            chargeSound.Play();
-        }
-
-        Debug.Log("Charging: " + currentChargeTime);
-    }
     }
 
     void Shoot()
     {
-    // Shoot Sound plays
-    shootSound.Play();
     // Calculate the shooting direction based on the player's forward direction
     //Vector3 shootDirection = transform.forward;
 
