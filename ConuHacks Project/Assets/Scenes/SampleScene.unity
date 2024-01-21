@@ -168,6 +168,7 @@ MonoBehaviour:
   chargeSpeed: 5
   maxChargeTime: 3
   shootForce: 100
+
 --- !u!143 &193139186
 CharacterController:
   m_ObjectHideFlags: 0
@@ -240,6 +241,7 @@ Rigidbody:
   m_CollisionDetection: 1
 --- !u!114 &193139189
 MonoBehaviour:
+
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -250,6 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795ddf86e7a22e947b3a78675364dd17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+
 --- !u!1 &265513684
 GameObject:
   m_ObjectHideFlags: 0
