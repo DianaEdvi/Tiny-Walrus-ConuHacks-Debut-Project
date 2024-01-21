@@ -56,8 +56,11 @@ public class PlayerMovement : MonoBehaviour
         // controls the shooting forward 
         if (!isRightClicking && currentChargeTime > 0 ){
             Vector3 appliedForce = lookDirection * shootForce;
+            if(characterController.enabled){
             characterController.Move(appliedForce * Time.deltaTime);
             currentChargeTime -= 0.01f;
+            }
+            
         }
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
@@ -88,7 +91,9 @@ public class PlayerMovement : MonoBehaviour
             runSpeed = 12f;
         }
 
+        if(characterController.enabled){
         characterController.Move(moveDirection * Time.deltaTime);
+        }
 
         if (canMove)
         {
@@ -173,7 +178,10 @@ public class PlayerMovement : MonoBehaviour
     Vector3 appliedForce = forward * shootForce;
 
     // Apply the force to the character controller
+    
+    if(characterController.enabled){
     characterController.Move(appliedForce * Time.deltaTime);
+    }
 
     // Reset charge time for the next shot
 
